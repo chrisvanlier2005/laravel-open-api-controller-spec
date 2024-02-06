@@ -2,59 +2,91 @@
 
 namespace ChrisVanLier2005\OpenApiGenerator;
 
-use Illuminate\Support\Facades\App;
+use ChrisVanLier2005\OpenApiGenerator\Internal\Endpoint;
+use ChrisVanLier2005\OpenApiGenerator\Internal\Visitor;
+use PhpParser\Node;
 use PhpParser\NodeTraverser;
+use PhpParser\NodeVisitor\NameResolver;
+use PhpParser\NodeVisitorAbstract;
 use PhpParser\Parser;
+use ReflectionClass;
 
 class Generator
 {
-    private NodeTraverser $traverser;
+    private Endpoint $endpoint;
 
-    /**
-     * The classes to traverse.
-     *
-     * @var array<int, class-string>
-     */
-    private array $classMap = [];
-
-    private array $allowedSuffixes = [
-        'Controller',
-        'Resource',
-        'Request',
-    ];
 
     public function __construct(
         private readonly GeneratorOptions $options,
         private readonly Parser $parser,
     ) {
-        //
+        $this->endpoint = new Endpoint(
+            path: null,
+            method: null,
+            action: null,
+            parameters: null,
+            responses: null,
+        );
     }
 
     /**
-     * Create the intermediate representation before compilation
-     * to the final OpenAPI specification.
+     * Parse the given method and return the virtual endpoint representation.
      *
-     * @return array<int, \PhpParser\Node>
+     * @param class-string $class
+     * @param string $method
+     * @return Endpoint
      */
-    public function getIntermediate(): array
+    public function getEndpointForMethod(string $class, string $method = '__invoke'): Endpoint
     {
-        $this->setTraverser();
+        $parsed = $this->parser->parse($this->readClass($class));
 
-        return [];
+        if ($parsed === null) {
+            return $this->endpoint;
+        }
+
+        $this->getTraverser($class, $method)->traverse($parsed);
+
+        return $this->endpoint;
     }
 
     /**
-     * Set the node traverser.
-     *
-     * @return void
+     * @throws \ReflectionException
      */
-    private function setTraverser(): void
+    private function readClass(string $class): string
     {
-        $this->traverser = App::make(NodeTraverser::class);
+        return file_get_contents((new ReflectionClass($class))->getFileName());
     }
 
-    private function parse(): array
+    /**
+     * Retrieve the correct traverser.
+     *
+     * @param string $class
+     * @param string $method
+     * @return NodeTraverser
+     */
+    private function getTraverser(string $class, string $method): NodeTraverser
     {
+        $traverser = new NodeTraverser();
 
+        $traverser->addVisitor(new NameResolver(
+            options: [
+                'preserveOriginalNames' => true,
+                'replaceNodes' => true,
+            ]
+        ));
+
+        $traverser->addVisitor(new Visitor(
+            class: $class,
+            method: $method,
+            endpoint: $this->endpoint,
+            options: $this->options,
+        ));
+
+        return $traverser;
     }
+}
+
+function dd($var) {
+    var_dump($var);
+    die();
 }

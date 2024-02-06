@@ -17,12 +17,12 @@
         "illuminate/container": "^10.43",
         "nikic/php-parser": "^5.0"
     },
-    "require-dev": {
-        "pestphp/pest": "^2.33"
-    },
     "config": {
         "allow-plugins": {
             "pestphp/pest-plugin": true
         }
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^11.0"
     }
 }
