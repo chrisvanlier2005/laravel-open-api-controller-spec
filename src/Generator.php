@@ -40,8 +40,7 @@ class Generator
     {
         $this->setTraverser();
 
-
-
+        return [];
     }
 
     /**

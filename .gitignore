@@ -1,2 +1,12 @@
-vendor
-.idea
+.elasticbeanstalk/*
+!.elasticbeanstalk/*.cfg.yml
+!.elasticbeanstalk/*.global.yml
+/storage/*.key
+/vendor
+/.phpunit.cache
+.env
+.phpunit.result.cache
+auth.json
+phpcs.xml
+phpstan.neon
+phpunit.xml
