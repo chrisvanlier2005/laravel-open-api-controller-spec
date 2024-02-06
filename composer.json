@@ -1,0 +1,20 @@
+{
+    "name": "chrisvanlier/open-api-generator",
+    "type": "library",
+    "autoload": {
+        "psr-4": {
+            "ChrisVanLier2005\\OpenApiGenerator\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Chris van Lier",
+            "email": "93382176+chrisvanlier2005@users.noreply.github.com"
+        }
+    ],
+    "require": {
+        "illuminate/support": "^10.43",
+        "illuminate/container": "^10.43",
+        "nikic/php-parser": "^5.0"
+    }
+}
