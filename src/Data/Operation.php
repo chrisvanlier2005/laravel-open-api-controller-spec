@@ -2,6 +2,7 @@
 
 namespace ChrisVanLier2005\OpenApiGenerator\Data;
 
+use Illuminate\Support\Arr;
 use JsonSerializable;
 
 final class Operation implements JsonSerializable
@@ -10,6 +11,7 @@ final class Operation implements JsonSerializable
      * Create a representation of an endpoint.
      *
      * @param string|null $class
+     * @param string|null $classMethod
      * @param string|null $path
      * @param string|null $method
      * @param string|null $operationId
@@ -18,6 +20,7 @@ final class Operation implements JsonSerializable
      */
     public function __construct(
         public ?string $class = null,
+        public ?string $classMethod = null,
         public ?string $path = null,
         public ?string $method = null,
         public ?string $operationId = null,
@@ -40,7 +43,10 @@ final class Operation implements JsonSerializable
                     'operationId' => $this->operationId,
                     'description' => null,
                     'parameters' => $this->parameters,
-                    'responses' => $this->responses,
+                    'responses' => Arr::mapWithKeys(
+                        $this->responses ?? [],
+                        fn (Response $response) => $response->jsonSerialize()
+                    ),
                 ],
             ],
         ];

@@ -18,11 +18,13 @@ class ControllerVisitor implements NodeVisitor
      * Create a new visitor instance.
      *
      * @param class-string $class
+     * @param string $method
      * @param Operation $endpoint
      * @param list<class-string<Mapper>> $mappers
      */
     public function __construct(
         private readonly string $class,
+        private readonly string $method,
         private readonly Operation $endpoint,
         private readonly array|MapperSet $mappers,
     ) {
@@ -31,6 +33,7 @@ class ControllerVisitor implements NodeVisitor
     public function enterNode(Node $node): void
     {
         $this->endpoint->class = $this->class;
+        $this->endpoint->classMethod = $this->method;
 
         $mappers = $this->mappers instanceof MapperSet
             ? $this->mappers->__invoke()
@@ -38,6 +41,10 @@ class ControllerVisitor implements NodeVisitor
 
         foreach ($mappers as $mapperIdentifier) {
             $mapper = new $mapperIdentifier;
+
+            if ($node instanceof Node\Stmt\ClassMethod && $node->name->name !== $this->method) {
+                continue;
+            }
 
             if (!$mapper->shouldMap($node, $this->endpoint)) {
                 continue;

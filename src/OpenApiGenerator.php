@@ -14,7 +14,7 @@ use RuntimeException;
 /**
  * @todo refactor this.
  */
-class Generator
+class OpenApiGenerator
 {
     private Operation $endpoint;
 
@@ -43,9 +43,8 @@ class Generator
      * @param class-string $class
      * @param string $method
      * @return \ChrisVanLier2005\OpenApiGenerator\Data\Operation
-     * @throws \ReflectionException
      */
-    public function getOperationForMethod(string $class): Operation
+    public function getOperationForMethod(string $class, string $method): Operation
     {
         $parsed = $this->parser->parse($this->readClass($class));
 
@@ -53,7 +52,7 @@ class Generator
             return $this->endpoint;
         }
 
-        $this->buildTraverser($class)
+        $this->buildTraverser($class, $method)
             ->traverse($parsed);
 
         return $this->endpoint;
@@ -89,10 +88,11 @@ class Generator
      * Retrieve the correct traverser.
      *
      * @param string $class
+     * @param string $method
      * @return NodeTraverser
      * @todo Remove class & method parameters
      */
-    private function buildTraverser(string $class): NodeTraverser
+    private function buildTraverser(string $class, string $method): NodeTraverser
     {
         $traverser = new NodeTraverser();
 
@@ -108,6 +108,7 @@ class Generator
         $traverser->addVisitor(
             new ControllerVisitor(
                 class: $class,
+                method: $method,
                 endpoint: $this->endpoint,
                 mappers: new ControllerSet,
             )

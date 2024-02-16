@@ -1,14 +1,14 @@
 <?php
 
-namespace Feature;
+namespace ChrisVanLier2005\OpenApiGenerator\Tests\Feature;
 
 use ChrisVanLier2005\OpenApiGenerator\Data\Content;
 use ChrisVanLier2005\OpenApiGenerator\Data\Operation;
 use ChrisVanLier2005\OpenApiGenerator\Data\Reference;
 use ChrisVanLier2005\OpenApiGenerator\Data\Response;
-use ChrisVanLier2005\OpenApiGenerator\Generator;
+use ChrisVanLier2005\OpenApiGenerator\OpenApiGenerator;
 use ChrisVanLier2005\OpenApiGenerator\GeneratorOptions;
-use Illuminate\Support\Arr;
+use ChrisVanLier2005\OpenApiGenerator\OpenApiGeneratorFactory;
 use PhpParser\ParserFactory;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Yaml\Yaml;
@@ -16,79 +16,78 @@ use function ChrisVanLier2005\OpenApiGenerator\dd;
 
 final class GeneratorTest extends TestCase
 {
-    public function ItGeneratesCorrectIntermediateRepresentation(): void
+    public function testItGeneratesCorrectIntermediateRepresentation(): void
     {
-        $generator = new Generator(
-            (new ParserFactory())->createForNewestSupportedVersion(),
-        );
-
         $expected = new Operation(
             class: UserController::class,
+            classMethod: 'store',
             path: '/users',
-            method: 'POST',
+            method: 'post',
             operationId: 'users.store',
             parameters: [
                 new Reference(
-                    ref: User::class,
+                    ref: 'User',
                 ),
             ],
             responses: [
                 new Response(
-                    description: 'OK',
+                    description: 'store',
                     status: 201,
                     content: new Content(
-                        'application/json',
-                        new Reference(
-                            ref: UserResource::class,
+                        type: 'application/json',
+                        schema: new Reference(
+                            ref: 'User',
                         ),
                     ),
                 ),
             ]
         );
 
-        $actual = $generator->getOperationForMethod(UserController::class, 'store');
+        $actual = OpenApiGeneratorFactory::make()->getOperationForMethod(UserController::class, 'store');
 
         $this->assertEquals($expected, $actual);
     }
 
     public function testItGeneratesTheExpectedJson(): void
     {
-        $generator = new Generator(
-            (new ParserFactory())->createForNewestSupportedVersion(),
-        );
+        $generator = OpenApiGeneratorFactory::make();
 
         $operation = $generator->getOperationForMethod(UserController::class, 'store');
 
         $expected = json_encode([
             '/users' => [
-                'POST' => [
+                'post' => [
                     'operationId' => 'users.store',
-                    'description' => '',
+                    'description' => null,
                     'parameters' => [
                         [
-                            '$ref' => 'User'
+                            '$ref' => 'User',
                         ],
                     ],
                     'responses' => [
                         201 => [
-                            'description' => 'OK',
+                            'description' => 'store',
                             'content' => [
                                 'application/json' => [
-                                    '$ref' => 'User',
+                                    'schema' => [
+                                        '$ref' => 'User',
+                                    ],
                                 ],
                             ],
                         ],
                     ],
                 ],
             ],
-        ]);
+        ], JSON_PRETTY_PRINT);
 
         $actual = $generator->convertToJson($operation);
+        $actual = Yaml::dump(json_decode($actual, true), 10, 2);
+        dd($actual);
+
 
         $this->assertEquals($expected, $actual);
     }
 }
-
 
 class User
 {
@@ -115,3 +114,4 @@ class UserController
         return new UserResource($user);
     }
 }
+
