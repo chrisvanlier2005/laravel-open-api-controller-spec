@@ -15,7 +15,8 @@
     "require": {
         "illuminate/support": "^10.43",
         "illuminate/container": "^10.43",
-        "nikic/php-parser": "^5.0"
+        "nikic/php-parser": "^5.0",
+        "symfony/yaml": "^7.0"
     },
     "config": {
         "allow-plugins": {

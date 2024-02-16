@@ -10,3 +10,4 @@ auth.json
 phpcs.xml
 phpstan.neon
 phpunit.xml
+.idea
