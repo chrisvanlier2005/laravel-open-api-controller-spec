@@ -106,7 +106,7 @@ The Operation object can be used to build the specification for the endpoint.
 
 ```php
 /** @var \ChrisVanLier2005\OpenApiGenerator\OpenApiGenerator $generator */
-$json = $generator->toJson($operation);
+$json = $generator->operationToJson($operation);
 ```
 
 You can then convert this to a YAML string if that is the preferred format.

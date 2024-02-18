@@ -11,9 +11,6 @@ use PhpParser\Parser;
 use ReflectionClass;
 use RuntimeException;
 
-/**
- * @todo refactor this.
- */
 class OpenApiGenerator
 {
     private Operation $endpoint;
@@ -52,8 +49,7 @@ class OpenApiGenerator
             return $this->endpoint;
         }
 
-        $this->buildTraverser($class, $method)
-            ->traverse($parsed);
+        $this->buildTraverser($class, $method)->traverse($parsed);
 
         return $this->endpoint;
     }
@@ -64,8 +60,9 @@ class OpenApiGenerator
      * @param \ChrisVanLier2005\OpenApiGenerator\Data\Operation $operation
      * @param int $flags
      * @return string
+     * @todo Determine if this is actually necessary as it's just a safe wrapper around `json_encode`
      */
-    public function toJson(Operation $operation, int $flags = 0): string
+    public function operationToJson(Operation $operation, int $flags = 0): string
     {
         $json = json_encode($operation, $flags);
 
@@ -74,18 +71,6 @@ class OpenApiGenerator
         }
 
         return $json;
-    }
-
-    /**
-     * Retrieve the file contents of the given class.
-     *
-     * @param string $class
-     * @return string
-     * @throws \ReflectionException
-     */
-    private function getClassContents(string $class): string
-    {
-        return file_get_contents((new ReflectionClass($class))->getFileName());
     }
 
     /**
@@ -119,5 +104,17 @@ class OpenApiGenerator
         );
 
         return $traverser;
+    }
+
+    /**
+     * Retrieve the file contents of the given class.
+     *
+     * @param string $class
+     * @return string
+     * @throws \ReflectionException
+     */
+    private function getClassContents(string $class): string
+    {
+        return file_get_contents((new ReflectionClass($class))->getFileName());
     }
 }

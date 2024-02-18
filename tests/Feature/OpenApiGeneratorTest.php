@@ -52,7 +52,7 @@ final class OpenApiGeneratorTest extends TestCase
             'store',
         );
 
-        $actual = $this->generator->toJson($operation);
+        $actual = $this->generator->operationToJson($operation);
 
         $this->assertEquals($expected, $actual);
     }
@@ -91,7 +91,7 @@ final class OpenApiGeneratorTest extends TestCase
             ShowUserController::class,
         );
 
-        $actual = $this->generator->toJson($operation, JSON_PRETTY_PRINT);
+        $actual = $this->generator->operationToJson($operation, JSON_PRETTY_PRINT);
 
         $this->assertEquals($expected, $actual);
     }
