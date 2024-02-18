@@ -38,7 +38,7 @@ final class ParameterMapper implements Mapper
                 name: $param->var->name,
                 in: 'query',
                 required: !$param->default,
-                description: '',
+                description: null,
                 type: $param->type->name,
                 schema: new Reference($name),
             );

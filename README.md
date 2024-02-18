@@ -17,18 +17,18 @@ final class UserController
 Can be converted to:
 ```yaml
 /users:
-  post:
-    operationId: users.store
-    description: null
-    parameters:
-      - $ref: User
-    responses:
-      201:
-        description: store
-        content:
-          application/json:
-            schema:
-              $ref: User
+   post:
+     operationId: users.store
+     description: null
+     parameters:
+       - $ref: User
+     responses:
+       201:
+         description: null
+         content:
+           application/json:
+             schema:
+               $ref: User
 ```
 
 There are still some problems with the current implementation, as you can see the description is null or does not make sense.
@@ -37,6 +37,7 @@ Also there is still work to be done to support more complex endpoints & response
 For example:
 * Support for other HTTP response codes. If a form request is used with validation, there should be a response for Unprocessable Entity.
 * Collection return types. If a controller returns a collection, the response either be a reference to the collection or a array of references to the item.
+* Description guessers a store method should have a generic description like "Create a new User" or "Store a new User".
 
 ## Setting up
 This package depends on the PHP-Parser package to parse php files. However you can specify the parser to use when creating the generator.

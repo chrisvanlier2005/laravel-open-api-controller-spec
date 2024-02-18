@@ -39,7 +39,7 @@ class ResponseMapper implements Mapper
         }
 
         $operation->responses[] = new Response(
-            description: $node->name->name,
+            description: null,
             status: $this->status($node->name->name),
             content: new Content(
                 'application/json',
