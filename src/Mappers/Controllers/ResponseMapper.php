@@ -38,27 +38,17 @@ class ResponseMapper implements Mapper
             $operation->responses = [];
         }
 
+        $status = $this->status($node->name->name);
+        $description = $this->getDescriptionForStatus($status);
+
         $operation->responses[] = new Response(
-            description: null,
-            status: $this->status($node->name->name),
+            description: $description,
+            status: $status,
             content: new Content(
                 'application/json',
-                new Reference($name),
+                new Reference("#/components/schemas/{$name}"),
             ),
         );
-    }
-
-    /**
-     * Determine whether the mapper should apply.
-     *
-     * @param \PhpParser\Node $node
-     * @param \ChrisVanLier2005\OpenApiGenerator\Data\Operation $operation
-     * @return bool
-     */
-    public function shouldMap(Node $node, Operation $operation): bool
-    {
-        return $node instanceof Node\Stmt\ClassMethod
-            && Str::endsWith($node->name->name, ['index', 'show', 'store', 'update', 'destroy', 'restore', '__invoke']);
     }
 
     /**
@@ -88,5 +78,43 @@ class ResponseMapper implements Mapper
             'destroy' => 204,
             default => 200,
         };
+    }
+
+    /**
+     * Get the description for the status code.
+     *
+     * @return void
+     */
+    private function getDescriptionForStatus(int $status): string
+    {
+        return match ($status) {
+            201 => 'Created',
+            204 => 'No Content',
+            default => 'OK',
+        };
+    }
+
+    /**
+     * Determine whether the mapper should apply.
+     *
+     * @param \PhpParser\Node $node
+     * @param \ChrisVanLier2005\OpenApiGenerator\Data\Operation $operation
+     * @return bool
+     */
+    public function shouldMap(Node $node, Operation $operation): bool
+    {
+        return $node instanceof Node\Stmt\ClassMethod
+            && Str::endsWith(
+                $node->name->name,
+                [
+                    'index',
+                    'show',
+                    'store',
+                    'update',
+                    'destroy',
+                    'restore',
+                    '__invoke',
+                ]
+            );
     }
 }

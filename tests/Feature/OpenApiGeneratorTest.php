@@ -25,19 +25,19 @@ final class OpenApiGeneratorTest extends TestCase
             '/users' => [
                 'post' => [
                     'operationId' => 'users.store',
-                    'description' => null,
+                    'description' => 'Store a newly created User in storage',
                     'parameters' => [
                         [
-                            '$ref' => 'User',
+                            '$ref' => '#/components/parameters/User',
                         ],
                     ],
                     'responses' => [
                         201 => [
-                            'description' => 'store',
+                            'description' => 'Created',
                             'content' => [
                                 'application/json' => [
                                     'schema' => [
-                                        '$ref' => 'User',
+                                        '$ref' => '#/components/schemas/User',
                                     ],
                                 ],
                             ],
@@ -45,21 +45,21 @@ final class OpenApiGeneratorTest extends TestCase
                     ],
                 ],
             ],
-        ]);
+        ], JSON_PRETTY_PRINT);
 
         $operation = $this->generator->makeOperationForMethod(
             UserController::class,
             'store',
         );
 
-        $actual = $this->generator->operationToJson($operation);
+        $actual = $this->generator->operationToJson($operation, JSON_PRETTY_PRINT);
 
         $this->assertEquals($expected, $actual);
     }
 
     public function testItGeneratesTheExpectedJSONForInvokableControllers(): void
     {
-        $this->markTestSkipped('Not implemented.');
+        $this->markTestSkipped('WIP');
 
         $expected = json_encode([
             '/users/{user}' => [

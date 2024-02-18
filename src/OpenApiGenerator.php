@@ -2,6 +2,7 @@
 
 namespace ChrisVanLier2005\OpenApiGenerator;
 
+use ChrisVanLier2005\OpenApiGenerator\Data\OpenApiGeneratorConfig;
 use ChrisVanLier2005\OpenApiGenerator\Data\Operation;
 use ChrisVanLier2005\OpenApiGenerator\Mappers\MapperSet;
 use ChrisVanLier2005\OpenApiGenerator\Mappers\Sets\ControllerSet;
@@ -19,6 +20,7 @@ class OpenApiGenerator
      * Create a new Generator instance.
      *
      * @param \PhpParser\Parser $parser
+     * @param list<\ChrisVanLier2005\OpenApiGenerator\Mappers\Mapper>|\ChrisVanLier2005\OpenApiGenerator\Mappers\MapperSet|null $mappers
      * @return void
      */
     public function __construct(
@@ -41,36 +43,32 @@ class OpenApiGenerator
      * @param string $method
      * @return \ChrisVanLier2005\OpenApiGenerator\Data\Operation
      */
-    public function makeOperationForMethod(string $class, string $method = '__invoke'): Operation
-    {
+    public function makeOperationForMethod(
+        string $class,
+        string $method = '__invoke'
+    ): Operation {
         $parsed = $this->parser->parse($this->getClassContents($class));
 
         if ($parsed === null) {
             return $this->endpoint;
         }
 
-        $this->buildTraverser($class, $method)->traverse($parsed);
+        $this->buildTraverser($class, $method)
+            ->traverse($parsed);
 
         return $this->endpoint;
     }
 
     /**
-     * Convert the given operation to a JSON string.
+     * Retrieve the file contents of the given class.
      *
-     * @param \ChrisVanLier2005\OpenApiGenerator\Data\Operation $operation
-     * @param int $flags
+     * @param string $class
      * @return string
-     * @todo Determine if this is actually necessary as it's just a safe wrapper around `json_encode`
+     * @throws \ReflectionException
      */
-    public function operationToJson(Operation $operation, int $flags = 0): string
+    private function getClassContents(string $class): string
     {
-        $json = json_encode($operation, $flags);
-
-        if ($json === false) {
-            throw new RuntimeException('Failed to convert operation to JSON.');
-        }
-
-        return $json;
+        return file_get_contents((new ReflectionClass($class))->getFileName());
     }
 
     /**
@@ -81,8 +79,10 @@ class OpenApiGenerator
      * @return NodeTraverser
      * @todo Remove class & method parameters
      */
-    private function buildTraverser(string $class, string $method): NodeTraverser
-    {
+    private function buildTraverser(
+        string $class,
+        string $method
+    ): NodeTraverser {
         $traverser = new NodeTraverser();
 
         $traverser->addVisitor(
@@ -107,14 +107,24 @@ class OpenApiGenerator
     }
 
     /**
-     * Retrieve the file contents of the given class.
+     * Convert the given operation to a JSON string.
      *
-     * @param string $class
+     * @param \ChrisVanLier2005\OpenApiGenerator\Data\Operation $operation
+     * @param int $flags
      * @return string
-     * @throws \ReflectionException
+     * @todo Determine if this is actually necessary as it's just a safe
+     *     wrapper around `json_encode`
      */
-    private function getClassContents(string $class): string
-    {
-        return file_get_contents((new ReflectionClass($class))->getFileName());
+    public function operationToJson(
+        Operation $operation,
+        int $flags = 0
+    ): string {
+        $json = json_encode($operation, $flags);
+
+        if ($json === false) {
+            throw new RuntimeException('Failed to convert operation to JSON.');
+        }
+
+        return $json;
     }
 }

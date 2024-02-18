@@ -31,7 +31,7 @@ final class ParameterMapper implements Mapper
             $name = class_basename($param->type->name);
 
             if (!in_array($param->type->name, ['int', 'string', 'bool', 'float'])) {
-                return new Reference($name);
+                return new Reference("#/components/parameters/{$name}");
             }
 
             return new RequestParameter(

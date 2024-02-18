@@ -2,6 +2,7 @@
 
 namespace ChrisVanLier2005\OpenApiGenerator\Mappers\Sets;
 
+use ChrisVanLier2005\OpenApiGenerator\Mappers\Controllers\DescriptionMapper;
 use ChrisVanLier2005\OpenApiGenerator\Mappers\Controllers\OperationIdMapper;
 use ChrisVanLier2005\OpenApiGenerator\Mappers\Controllers\MethodMapper;
 use ChrisVanLier2005\OpenApiGenerator\Mappers\Controllers\ParameterMapper;
@@ -19,8 +20,9 @@ final class ControllerSet implements MapperSet
     public function __invoke(): array
     {
         return [
-            OperationIdMapper::class,
             MethodMapper::class,
+            OperationIdMapper::class,
+            DescriptionMapper::class,
             ParameterMapper::class,
             PathMapper::class,
             ResponseMapper::class,

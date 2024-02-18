@@ -24,6 +24,7 @@ final class Operation implements JsonSerializable
         public ?string $path = null,
         public ?string $method = null,
         public ?string $operationId = null,
+        public ?string $description = null,
         public ?array $parameters = null,
         public ?array $responses = null,
     ) {
@@ -41,7 +42,7 @@ final class Operation implements JsonSerializable
             $this->path => [
                 $this->method => [
                     'operationId' => $this->operationId,
-                    'description' => null,
+                    'description' => $this->description,
                     'parameters' => $this->parameters,
                     'responses' => Arr::mapWithKeys(
                         $this->responses ?? [],
