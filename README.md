@@ -1,4 +1,4 @@
-# Laravel OpenAPI specification generator
+# Specification Generator for laravel controllers
 
 This is a PoC for generating OpenAPI specification from Laravel controllers.
 Currently only supports generating basic endpoint based on a controller.
