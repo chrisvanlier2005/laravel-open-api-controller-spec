@@ -73,7 +73,6 @@ class ResponseMapper implements Mapper
             ->classBasename()
             ->replace('Resource', '')
             ->toString();
-
     }
 
     /**
