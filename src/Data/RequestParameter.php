@@ -2,7 +2,7 @@
 
 namespace ChrisVanLier2005\OpenApiGenerator\Data;
 
-readonly class RequestParameter
+final class RequestParameter
 {
     public function __construct(
         public string $name,

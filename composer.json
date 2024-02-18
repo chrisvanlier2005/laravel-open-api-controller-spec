@@ -6,6 +6,11 @@
             "ChrisVanLier2005\\OpenApiGenerator\\": "src/"
         }
     },
+    "autoload-dev": {
+        "psr-4": {
+            "ChrisVanLier2005\\OpenApiGenerator\\Tests\\": "tests/"
+        }
+    },
     "authors": [
         {
             "name": "Chris van Lier",

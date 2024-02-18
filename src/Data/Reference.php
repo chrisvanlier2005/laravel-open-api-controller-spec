@@ -3,9 +3,8 @@
 namespace ChrisVanLier2005\OpenApiGenerator\Data;
 
 use JsonSerializable;
-use function ChrisVanLier2005\OpenApiGenerator\dd;
 
-readonly class Reference implements JsonSerializable
+class Reference implements JsonSerializable
 {
     public function __construct(
         public string $ref,
