@@ -2,6 +2,7 @@
 
 namespace ChrisVanLier2005\OpenApiGenerator;
 
+use ChrisVanLier2005\OpenApiGenerator\Mappers\MapperSet;
 use PhpParser\ParserFactory;
 
 class OpenApiGeneratorFactory
@@ -11,10 +12,11 @@ class OpenApiGeneratorFactory
      *
      * @return \ChrisVanLier2005\OpenApiGenerator\OpenApiGenerator
      */
-    public static function make(): OpenApiGenerator
+    public static function make(array|MapperSet|null $mappers = null): OpenApiGenerator
     {
         return new OpenApiGenerator(
             (new ParserFactory())->createForNewestSupportedVersion(),
+            $mappers,
         );
     }
 }

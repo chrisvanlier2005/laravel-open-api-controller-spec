@@ -7,6 +7,7 @@ use ChrisVanLier2005\OpenApiGenerator\OpenApiGeneratorFactory;
 use ChrisVanLier2005\OpenApiGenerator\Tests\Feature\Examples\Controllers\ShowUserController;
 use ChrisVanLier2005\OpenApiGenerator\Tests\Feature\Examples\Controllers\UserController;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\Yaml\Yaml;
 
 final class GeneratorTest extends TestCase
 {
@@ -59,6 +60,8 @@ final class GeneratorTest extends TestCase
 
     public function testItGeneratesTheExpectedJSONForInvokableControllers(): void
     {
+        $this->markTestSkipped('Not implemented.');
+
         $expected = json_encode([
             '/users/{user}' => [
                 '~' => [

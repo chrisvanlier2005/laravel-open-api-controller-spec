@@ -6,9 +6,7 @@ use ChrisVanLier2005\OpenApiGenerator\Data\Operation;
 use ChrisVanLier2005\OpenApiGenerator\Data\Reference;
 use ChrisVanLier2005\OpenApiGenerator\Data\RequestParameter;
 use ChrisVanLier2005\OpenApiGenerator\Mappers\Mapper;
-use Illuminate\Support\Str;
 use PhpParser\Node;
-use function ChrisVanLier2005\OpenApiGenerator\dd;
 
 final class ParameterMapper implements Mapper
 {

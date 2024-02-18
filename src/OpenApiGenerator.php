@@ -3,6 +3,7 @@
 namespace ChrisVanLier2005\OpenApiGenerator;
 
 use ChrisVanLier2005\OpenApiGenerator\Data\Operation;
+use ChrisVanLier2005\OpenApiGenerator\Mappers\MapperSet;
 use ChrisVanLier2005\OpenApiGenerator\Mappers\Sets\ControllerSet;
 use Illuminate\Support\Arr;
 use PhpParser\NodeTraverser;
@@ -27,6 +28,7 @@ class OpenApiGenerator
      */
     public function __construct(
         private readonly Parser $parser,
+        public array|MapperSet|null $mappers = null,
     ) {
         $this->endpoint = new Operation(
             path: null,
@@ -46,7 +48,7 @@ class OpenApiGenerator
      */
     public function makeOperationForMethod(string $class, string $method = '__invoke'): Operation
     {
-        $parsed = $this->parser->parse($this->readClass($class));
+        $parsed = $this->parser->parse($this->getClassContents($class));
 
         if ($parsed === null) {
             return $this->endpoint;
@@ -77,15 +79,19 @@ class OpenApiGenerator
     }
 
     /**
+     * Retrieve the file contents of the given class.
+     *
+     * @param string $class
+     * @return string
      * @throws \ReflectionException
      */
-    private function readClass(string $class): string
+    private function getClassContents(string $class): string
     {
         return file_get_contents((new ReflectionClass($class))->getFileName());
     }
 
     /**
-     * Retrieve the correct traverser.
+     * Build a prepared traverser instance.
      *
      * @param string $class
      * @param string $method
@@ -101,8 +107,8 @@ class OpenApiGenerator
                 options: [
                     'preserveOriginalNames' => true,
                     'replaceNodes' => true,
-                ]
-            )
+                ],
+            ),
         );
 
         $traverser->addVisitor(
@@ -110,20 +116,10 @@ class OpenApiGenerator
                 class: $class,
                 method: $method,
                 endpoint: $this->endpoint,
-                mappers: new ControllerSet,
-            )
+                mappers: $this->mappers ?? new ControllerSet,
+            ),
         );
 
         return $traverser;
     }
-}
-
-function dd(...$var)
-{
-    if (count($var) === 1) {
-        $var = Arr::first($var);
-    }
-
-    var_dump($var);
-    die();
 }
