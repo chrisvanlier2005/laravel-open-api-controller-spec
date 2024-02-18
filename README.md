@@ -1,5 +1,21 @@
 # Specification Generator for laravel controllers
 
+Not published to packagist yet, so if you want to try this out you can download and include it in your project.
+
+```json
+{
+    "repositories": [
+        {
+            "type": "path",
+            "url": "path/to/this/package"
+        }
+    ],
+    "require-dev": {
+        "chrisvanlier2005/openapi- ": "*"
+    }
+}
+```
+
 This is a PoC for generating OpenAPI specification from Laravel controllers.
 Currently only supports generating basic endpoint based on a controller.
 
