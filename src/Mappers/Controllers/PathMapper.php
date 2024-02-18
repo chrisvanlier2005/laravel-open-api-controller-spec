@@ -9,7 +9,6 @@ use PhpParser\Node;
 
 final class PathMapper implements Mapper
 {
-
     /**
      * Map the path of the endpoint.
      *
@@ -26,26 +25,18 @@ final class PathMapper implements Mapper
         $resource = class_basename($operation->class);
         $resource = str_replace('Controller', '', $resource);
 
-        $resourcePath = str($resource)
-            ->headline()
-            ->slug()
-            ->plural();
-
-        $modelBindingName = str($resource)
-            ->headline()
-            ->singular()
-            ->slug();
+        $resourceRootPath = $this->resourceRootPath($resource);
 
         $endpointPath = str_replace(
             '{:resource}',
-            "{$modelBindingName}",
+            $this->modelBindingName($resource),
             match ($node->name->name) {
                 'show', 'update', 'destroy', 'restore' => '/{:resource}',
                 default => '',
             }
         );
 
-        $operation->path = "/$resourcePath$endpointPath";
+        $operation->path = "/{$resourceRootPath}{$endpointPath}";
     }
 
     /**
@@ -67,5 +58,33 @@ final class PathMapper implements Mapper
                 'restore',
                 '__invoke',
             ]);
+    }
+
+    /**
+     * Get the root path for the given resource.
+     *
+     * @param string $resource
+     * @return string
+     */
+    private function resourceRootPath(string $resource): string
+    {
+        $path = Str::headline($resource);
+        $path = Str::slug($path);
+
+        return Str::plural($path);
+    }
+
+    /**
+     * Get the model binding name for the given resource.
+     *
+     * @param string $resource
+     * @return string
+     */
+    private function modelBindingName(string $resource): string
+    {
+        $name = Str::headline($resource);
+        $name = Str::singular($name);
+
+        return Str::slug($name);
     }
 }

@@ -11,6 +11,11 @@ use ChrisVanLier2005\OpenApiGenerator\Mappers\MapperSet;
 
 final class ControllerSet implements MapperSet
 {
+    /**
+     * Retrieve a list of mappers that should be used.
+     *
+     * @return list<class-string<\ChrisVanLier2005\OpenApiGenerator\Mappers\Mapper>>
+     */
     public function __invoke(): array
     {
         return [

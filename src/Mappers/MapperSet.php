@@ -5,9 +5,9 @@ namespace ChrisVanLier2005\OpenApiGenerator\Mappers;
 interface MapperSet
 {
     /**
-     * Get the mappers for the set.
+     * Retrieve a list of mappers that should be used.
      *
-     * @return array<array-key, class-string<\ChrisVanLier2005\OpenApiGenerator\Mappers\Mapper>>
+     * @return list<class-string<\ChrisVanLier2005\OpenApiGenerator\Mappers\Mapper>>
      */
     public function __invoke(): array;
 }

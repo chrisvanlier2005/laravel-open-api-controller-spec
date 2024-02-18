@@ -5,7 +5,6 @@ namespace ChrisVanLier2005\OpenApiGenerator;
 use ChrisVanLier2005\OpenApiGenerator\Data\Operation;
 use ChrisVanLier2005\OpenApiGenerator\Mappers\MapperSet;
 use ChrisVanLier2005\OpenApiGenerator\Mappers\Sets\ControllerSet;
-use Illuminate\Support\Arr;
 use PhpParser\NodeTraverser;
 use PhpParser\NodeVisitor\NameResolver;
 use PhpParser\Parser;
@@ -18,7 +17,6 @@ use RuntimeException;
 class OpenApiGenerator
 {
     private Operation $endpoint;
-
 
     /**
      * Create a new Generator instance.
