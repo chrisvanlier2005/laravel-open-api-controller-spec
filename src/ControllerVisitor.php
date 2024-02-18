@@ -9,10 +9,7 @@ use ChrisVanLier2005\OpenApiGenerator\Mappers\MapperSet;
 use PhpParser\Node;
 use PhpParser\NodeVisitor;
 
-/**
- * @todo Refactor this class.
- */
-class ControllerVisitor implements NodeVisitor
+readonly class ControllerVisitor implements NodeVisitor
 {
     /**
      * Create a new visitor instance.
@@ -23,10 +20,10 @@ class ControllerVisitor implements NodeVisitor
      * @param list<class-string<Mapper>> $mappers
      */
     public function __construct(
-        private readonly string $class,
-        private readonly string $method,
-        private readonly Operation $endpoint,
-        private readonly array|MapperSet $mappers,
+        private string $class,
+        private string $method,
+        private Operation $endpoint,
+        private array|MapperSet $mappers,
     ) {
     }
 

@@ -4,7 +4,7 @@ namespace ChrisVanLier2005\OpenApiGenerator;
 
 use PhpParser\ParserFactory;
 
-final class OpenApiGeneratorFactory
+class OpenApiGeneratorFactory
 {
     /**
      * Create an OpenApiGenerator instance for the latest supported PHP version.

@@ -7,7 +7,7 @@ use PhpParser\Node;
 
 interface Mapper
 {
-    public function map(Node $node, Operation $endpoint): void;
+    public function map(Node $node, Operation $operation): void;
 
     /**
      * Determine whether mapper should be applied.

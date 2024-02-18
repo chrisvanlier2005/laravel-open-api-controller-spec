@@ -44,7 +44,7 @@ class OpenApiGenerator
      * @param string $method
      * @return \ChrisVanLier2005\OpenApiGenerator\Data\Operation
      */
-    public function getOperationForMethod(string $class, string $method): Operation
+    public function makeOperationForMethod(string $class, string $method = '__invoke'): Operation
     {
         $parsed = $this->parser->parse($this->readClass($class));
 
@@ -65,7 +65,7 @@ class OpenApiGenerator
      * @param int $flags
      * @return string
      */
-    public function convertToJson(Operation $operation, int $flags = 0): string
+    public function toJson(Operation $operation, int $flags = 0): string
     {
         $json = json_encode($operation, $flags);
 

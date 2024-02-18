@@ -2,58 +2,25 @@
 
 namespace ChrisVanLier2005\OpenApiGenerator\Tests\Feature;
 
-use ChrisVanLier2005\OpenApiGenerator\Data\Content;
-use ChrisVanLier2005\OpenApiGenerator\Data\Operation;
-use ChrisVanLier2005\OpenApiGenerator\Data\Reference;
-use ChrisVanLier2005\OpenApiGenerator\Data\Response;
+use ChrisVanLier2005\OpenApiGenerator\OpenApiGenerator;
 use ChrisVanLier2005\OpenApiGenerator\OpenApiGeneratorFactory;
+use ChrisVanLier2005\OpenApiGenerator\Tests\Feature\Examples\Controllers\ShowUserController;
 use ChrisVanLier2005\OpenApiGenerator\Tests\Feature\Examples\Controllers\UserController;
 use PHPUnit\Framework\TestCase;
 
 final class GeneratorTest extends TestCase
 {
-    public function testItGeneratesCorrectIntermediateRepresentation(): void
+    private OpenApiGenerator $generator;
+
+    public function setUp(): void
     {
-        $expected = new Operation(
-            class: UserController::class,
-            classMethod: 'store',
-            path: '/users',
-            method: 'post',
-            operationId: 'users.store',
-            parameters: [
-                new Reference(
-                    ref: 'User',
-                ),
-            ],
-            responses: [
-                new Response(
-                    description: 'store',
-                    status: 201,
-                    content: new Content(
-                        type: 'application/json',
-                        schema: new Reference(
-                            ref: 'User',
-                        ),
-                    ),
-                ),
-            ]
-        );
+        parent::setUp();
 
-        $actual = OpenApiGeneratorFactory::make()
-            ->getOperationForMethod(UserController::class, 'store');
-
-        $this->assertEquals($expected, $actual);
+        $this->generator = OpenApiGeneratorFactory::make();
     }
 
-    public function testItGeneratesTheExpectedJson(): void
+    public function testItGeneratesTheExpectedJSONForStoreMethod(): void
     {
-        $generator = OpenApiGeneratorFactory::make();
-
-        $operation = $generator->getOperationForMethod(
-            UserController::class,
-            'store'
-        );
-
         $expected = json_encode([
             '/users' => [
                 'post' => [
@@ -80,7 +47,49 @@ final class GeneratorTest extends TestCase
             ],
         ]);
 
-        $actual = $generator->convertToJson($operation);
+        $operation = $this->generator->makeOperationForMethod(
+            UserController::class,
+            'store',
+        );
+
+        $actual = $this->generator->toJson($operation);
+
+        $this->assertEquals($expected, $actual);
+    }
+
+    public function testItGeneratesTheExpectedJSONForInvokableControllers(): void
+    {
+        $expected = json_encode([
+            '/users/{user}' => [
+                '~' => [
+                    'operationId' => 'users.show',
+                    'description' => null,
+                    'parameters' => [
+                        [
+                            '$ref' => 'User',
+                        ],
+                    ],
+                    'responses' => [
+                        200 => [
+                            'description' => 'show',
+                            'content' => [
+                                'application/json' => [
+                                    'schema' => [
+                                        '$ref' => 'User',
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ],
+                ]
+            ]
+        ], JSON_PRETTY_PRINT);
+
+        $operation = $this->generator->makeOperationForMethod(
+            ShowUserController::class,
+        );
+
+        $actual = $this->generator->toJson($operation, JSON_PRETTY_PRINT);
 
         $this->assertEquals($expected, $actual);
     }

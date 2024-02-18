@@ -14,16 +14,16 @@ final class PathMapper implements Mapper
      * Map the path of the endpoint.
      *
      * @param \PhpParser\Node $node
-     * @param \ChrisVanLier2005\OpenApiGenerator\Data\Operation $endpoint
+     * @param \ChrisVanLier2005\OpenApiGenerator\Data\Operation $operation
      * @return void
      */
-    public function map(Node $node, Operation $endpoint): void
+    public function map(Node $node, Operation $operation): void
     {
         if (!$node instanceof Node\Stmt\ClassMethod) {
             return;
         }
 
-        $resource = class_basename($endpoint->class);
+        $resource = class_basename($operation->class);
         $resource = str_replace('Controller', '', $resource);
 
         $resourcePath = str($resource)
@@ -45,7 +45,7 @@ final class PathMapper implements Mapper
             }
         );
 
-        $endpoint->path = "/$resourcePath$endpointPath";
+        $operation->path = "/$resourcePath$endpointPath";
     }
 
     /**

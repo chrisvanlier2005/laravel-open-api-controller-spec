@@ -16,10 +16,10 @@ final class ParameterMapper implements Mapper
      * Guess the request method of the endpoint.
      *
      * @param Node $node
-     * @param Operation $endpoint
+     * @param Operation $operation
      * @return void
      */
-    public function map(Node $node, Operation $endpoint): void
+    public function map(Node $node, Operation $operation): void
     {
         if (!$node instanceof Node\Stmt\ClassMethod) {
             return;
@@ -46,7 +46,7 @@ final class ParameterMapper implements Mapper
             );
         }, $node->getParams());
 
-        $endpoint->parameters = array_filter($parameters);
+        $operation->parameters = array_filter($parameters);
     }
 
     /**

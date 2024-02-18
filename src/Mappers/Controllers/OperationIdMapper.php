@@ -12,26 +12,26 @@ final class OperationIdMapper implements Mapper
      * Map the request method of the endpoint.
      *
      * @param Node $node
-     * @param Operation $endpoint
+     * @param Operation $operation
      * @return void
      */
-    public function map(Node $node, Operation $endpoint): void
+    public function map(Node $node, Operation $operation): void
     {
         if (!$node instanceof Node\Stmt\ClassMethod) {
             return;
         }
 
-        $resource = class_basename($endpoint->class);
+        $resource = class_basename($operation->class ?? '');
         $resource = str_replace('Controller', '', $resource);
         $resource = strtolower(preg_replace('/(?<!^)[A-Z]/', '-$0', $resource)) . 's';
 
-        $endpoint->operationId = match ($node->name->name) {
+        $operation->operationId = match ($node->name->name) {
             'index' => "{$resource}.index",
             'show' => "{$resource}.show",
             'store' => "{$resource}.store",
             'update' => "{$resource}.update",
             'destroy' => "{$resource}.destroy",
-            default => "{$resource}.{$node->name->name}",
+            default => "$resource",
         };
     }
 

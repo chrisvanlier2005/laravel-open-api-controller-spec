@@ -13,7 +13,7 @@ use function ChrisVanLier2005\OpenApiGenerator\dd;
 
 class ResponseMapper implements Mapper
 {
-    public function map(Node $node, Operation $endpoint): void
+    public function map(Node $node, Operation $operation): void
     {
         if (!$node instanceof Node\Stmt\ClassMethod) {
             return;
@@ -29,11 +29,11 @@ class ResponseMapper implements Mapper
             ->replace('Resource', '')
             ->toString();
 
-        if ($endpoint->responses === null) {
-            $endpoint->responses = [];
+        if ($operation->responses === null) {
+            $operation->responses = [];
         }
 
-        $endpoint->responses[] = new Response(
+        $operation->responses[] = new Response(
             description: $node->name->name,
             status: $this->status($node->name->name),
             content: new Content(

@@ -12,16 +12,16 @@ final class MethodMapper implements Mapper
      * Map the request method of the endpoint.
      *
      * @param Node $node
-     * @param Operation $endpoint
+     * @param Operation $operation
      * @return void
      */
-    public function map(Node $node, Operation $endpoint): void
+    public function map(Node $node, Operation $operation): void
     {
         if (!$node instanceof Node\Stmt\ClassMethod) {
             return;
         }
 
-        $endpoint->method = match ($node->name->name) {
+        $operation->method = match ($node->name->name) {
             'store' => 'post',
             'update' => 'put',
             'destroy' => 'delete',
